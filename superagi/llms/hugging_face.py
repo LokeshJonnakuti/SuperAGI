@@ -60,7 +60,7 @@ class HuggingFace(BaseLlm):
         Returns:
             bool: True if the access key is valid, False otherwise.
         """
-        response = requests.get(ACCOUNT_VERIFICATION_URL, headers=self.headers)
+        response = requests.get(ACCOUNT_VERIFICATION_URL, headers=self.headers, timeout=60)
 
         # A more sophisticated check could be done here.
         # Ideally we should be checking the response from the endpoint along with the status code.
@@ -91,7 +91,7 @@ class HuggingFace(BaseLlm):
                     "wait_for_model": True,
                 }
             }
-            response = requests.post(self.end_point, headers=self.headers, data=json.dumps(payload))
+            response = requests.post(self.end_point, headers=self.headers, data=json.dumps(payload), timeout=60)
             completion = json.loads(response.content.decode("utf-8"))
             logger.info(f"{completion=}")
             if self.task == Tasks.TEXT_GENERATION:
@@ -106,6 +106,6 @@ class HuggingFace(BaseLlm):
 
     def verify_end_point(self):
         data = json.dumps({"inputs": "validating end_point"})
-        response = requests.post(self.end_point, headers=self.headers, data=data)
+        response = requests.post(self.end_point, headers=self.headers, data=data, timeout=60)
 
         return response.json()

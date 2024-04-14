@@ -103,7 +103,7 @@ class Replicate(BaseLlm):
             bool: True if the access key is valid, False otherwise.
         """
         headers = {"Authorization": "Token " + self.api_key}
-        response = requests.get("https://api.replicate.com/v1/collections", headers=headers)
+        response = requests.get("https://api.replicate.com/v1/collections", headers=headers, timeout=60)
 
         # If the request is successful, status code will be 200
         if response.status_code == 200:

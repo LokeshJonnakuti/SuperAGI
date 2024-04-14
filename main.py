@@ -291,7 +291,7 @@ def github_auth_handler(code: str = Query(...), Authorize: AuthJWT = Depends()):
     headers = {
         'Accept': 'application/json'
     }
-    response = requests.post(github_token_url, params=params, headers=headers)
+    response = requests.post(github_token_url, params=params, headers=headers, timeout=60)
     if response.ok:
         data = response.json()
         access_token = data.get('access_token')
@@ -299,7 +299,7 @@ def github_auth_handler(code: str = Query(...), Authorize: AuthJWT = Depends()):
         headers = {
             'Authorization': f'Bearer {access_token}'
         }
-        response = requests.get(github_api_url, headers=headers)
+        response = requests.get(github_api_url, headers=headers, timeout=60)
         if response.ok:
             user_data = response.json()
             user_email = user_data["email"]

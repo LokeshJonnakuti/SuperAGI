@@ -47,7 +47,7 @@ class WebpageExtractor:
         """
         try:
             if url.lower().endswith(".pdf"):
-                response = requests.get(url)
+                response = requests.get(url, timeout=60)
                 response.raise_for_status()
 
                 with BytesIO(response.content) as pdf_data:

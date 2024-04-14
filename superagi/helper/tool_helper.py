@@ -31,7 +31,7 @@ def download_tool(tool_url, target_folder):
     path = "/"
     owner, repo, branch = parts[0], parts[1], parts[2]
     archive_url = f"https://api.github.com/repos/{owner}/{repo}/zipball/{branch}"
-    response = requests.get(archive_url)
+    response = requests.get(archive_url, timeout=60)
     tool_zip_file_path = os.path.join(target_folder, 'tool.zip')
 
     with open(tool_zip_file_path, 'wb') as f:
@@ -248,10 +248,10 @@ def get_readme_content_from_code_link(tool_code_link):
     branch = path_parts[4] if len(path_parts) > 4 else "main"
 
     readme_url = f"https://raw.githubusercontent.com/{username}/{repository}/{branch}/README.MD"
-    response = requests.get(readme_url)
+    response = requests.get(readme_url, timeout=60)
     if response.status_code == 404:
         readme_url = f"https://raw.githubusercontent.com/{username}/{repository}/{branch}/README.md"
-        response = requests.get(readme_url)
+        response = requests.get(readme_url, timeout=60)
     readme_content = response.text
     return readme_content
 
