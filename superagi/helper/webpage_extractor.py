@@ -8,9 +8,9 @@ from bs4 import BeautifulSoup
 from newspaper import Article, ArticleException, Config
 from requests_html import HTMLSession
 import time
-import random
 from lxml import html
 from superagi.lib.logger import logger
+import secrets
 
 USER_AGENTS = [
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3",
@@ -56,7 +56,7 @@ class WebpageExtractor:
 
             else:
                 config = Config()
-                config.browser_user_agent = random.choice(USER_AGENTS)
+                config.browser_user_agent = secrets.choice(USER_AGENTS)
                 config.request_timeout = 10
                 session = HTMLSession()
 
@@ -94,7 +94,7 @@ class WebpageExtractor:
             str: The extracted text.
         """
         headers = {
-            "User-Agent": random.choice(USER_AGENTS)
+            "User-Agent": secrets.choice(USER_AGENTS)
         }
 
         try:
@@ -137,7 +137,7 @@ class WebpageExtractor:
         """
         try:
             config = Config()
-            config.browser_user_agent = random.choice(USER_AGENTS)
+            config.browser_user_agent = secrets.choice(USER_AGENTS)
             config.request_timeout = 10
             session = HTMLSession()
 

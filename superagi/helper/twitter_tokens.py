@@ -1,6 +1,5 @@
 import hmac
 import time
-import random
 import base64
 import hashlib
 import urllib.parse
@@ -10,6 +9,7 @@ from sqlalchemy.orm import Session
 from superagi.models.toolkit import Toolkit
 from superagi.models.oauth_tokens import OauthTokens
 from superagi.config.config import get_config
+import secrets
 
 class Creds:
 
@@ -71,7 +71,7 @@ class TwitterTokens:
         return urllib.parse.quote(val, safe='')
 
     def gen_nonce(self):
-        nonce = ''.join([str(random.randint(0, 9)) for i in range(32)])
+        nonce = ''.join([str(secrets.SystemRandom().randint(0, 9)) for i in range(32)])
         return nonce
 
     def get_twitter_creds(self, toolkit_id):
