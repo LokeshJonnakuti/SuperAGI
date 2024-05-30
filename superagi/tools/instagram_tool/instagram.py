@@ -1,24 +1,18 @@
-import json
 import urllib
-import boto3
-import os
 from superagi.config.config import get_config
 from superagi.helper.error_handler import ErrorHandler
 from superagi.helper.resource_helper import ResourceHelper
 from typing import Type, Optional
 from pydantic import BaseModel, Field
-from superagi.helper.token_counter import TokenCounter
 from superagi.llms.base_llm import BaseLlm
-from superagi.models.agent_execution_feed import AgentExecutionFeed
 from superagi.tools.base_tool import BaseTool
-import os
 import requests
 from superagi.tools.tool_response_query_manager import ToolResponseQueryManager
-import random
 from superagi.models.agent import Agent
 from superagi.models.agent_execution import AgentExecution
 from superagi.helper.s3_helper import S3Helper
 from superagi.types.storage_types import StorageType
+from security import safe_requests
 
 class InstagramSchema(BaseModel):
     photo_description: str = Field(
@@ -174,8 +168,7 @@ class InstagramTool(BaseTool):
 
     def get_req_insta_id(self,root_api_url,facebook_page_id,meta_user_access_token):
         url_to_get_acc_id=f"{root_api_url}{facebook_page_id}?fields=instagram_business_account&access_token={meta_user_access_token}"
-        response=requests.get(
-            url_to_get_acc_id
+        response=safe_requests.get(url_to_get_acc_id
         )
 
         return response

@@ -10,7 +10,7 @@ from superagi.types.storage_types import StorageType
 from superagi.config.config import get_config
 from superagi.helper.s3_helper import S3Helper
 from datetime import timedelta, datetime
-import json
+from security import safe_requests
 
 class GithubHelper:
     def __init__(self, github_access_token, github_username):
@@ -58,7 +58,7 @@ class GithubHelper:
             "Authorization": f"Token {self.github_access_token}",
             "Accept": "application/vnd.github.v3+json"
         }
-        response = requests.get(url, headers=headers)
+        response = safe_requests.get(url, headers=headers)
         if response.status_code == 200:
             repository_data = response.json()
             return repository_data['private']
@@ -85,7 +85,7 @@ class GithubHelper:
         }
         file_path = self.get_file_path(file_name, folder_path)
         url = f'https://api.github.com/repos/{repository_owner}/{repository_name}/contents/{file_path}'
-        r = requests.get(url, headers=headers)
+        r = safe_requests.get(url, headers=headers)
         r.raise_for_status()
         data = r.json()
 
@@ -106,7 +106,7 @@ class GithubHelper:
             None
         """
         base_branch_url = f'https://api.github.com/repos/{repository_owner}/{repository_name}/branches/{base_branch}'
-        response = requests.get(base_branch_url, headers=headers)
+        response = safe_requests.get(base_branch_url, headers=headers)
         response_json = response.json()
         base_commit_sha = response_json['commit']['sha']
         head_branch_url = f'https://api.github.com/repos/{self.github_username}/{repository_name}/git/refs/heads/{head_branch}'
@@ -160,8 +160,7 @@ class GithubHelper:
         branch_url = f'https://api.github.com/repos/{self.github_username}/{repository_name}/git/refs'
         branch_params = {
             'ref': f'refs/heads/{head_branch}',
-            'sha': requests.get(
-                f'https://api.github.com/repos/{self.github_username}/{repository_name}/git/refs/heads/{base_branch}',
+            'sha': safe_requests.get(f'https://api.github.com/repos/{self.github_username}/{repository_name}/git/refs/heads/{base_branch}',
                 headers=headers).json()['object']['sha']
         }
         branch_response = requests.post(branch_url, json=branch_params, headers=headers)
@@ -359,7 +358,7 @@ class GithubHelper:
             "Accept": "application/vnd.github.v3.diff",
         }
 
-        response = requests.get(pull_request_url, headers=headers)
+        response = safe_requests.get(pull_request_url, headers=headers)
 
         if response.status_code == 200:
             logger.info('Successfully fetched pull request content.')
@@ -386,7 +385,7 @@ class GithubHelper:
             "Authorization": f"token {self.github_access_token}" if self.github_access_token else None,
             "Content-Type": "application/json",
         }
-        response = requests.get(url, headers=headers)
+        response = safe_requests.get(url, headers=headers)
         if response.status_code == 200:
             commits = response.json()
             latest_commit = commits[-1]  # Assuming the last commit is the latest
@@ -459,7 +458,7 @@ class GithubHelper:
             "Content-Type": "application/json",
         }
 
-        response = requests.get(url, headers=headers)
+        response = safe_requests.get(url, headers=headers)
 
         if response.status_code == 200:
             pull_request_urls = []

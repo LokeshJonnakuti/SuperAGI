@@ -1,10 +1,10 @@
 from __future__ import annotations
 
 from sqlalchemy import Column, Integer, String
-import requests
 
 # from superagi.models import AgentConfiguration
 from superagi.models.base_model import DBBaseModel
+from security import safe_requests
 
 marketplace_url = "https://app.superagi.com/api"
 # marketplace_url = "http://localhost:8001"
@@ -45,8 +45,7 @@ class Knowledges(DBBaseModel):
     @classmethod
     def fetch_marketplace_list(cls, page):
         headers = {'Content-Type': 'application/json'}
-        response = requests.get(
-            marketplace_url + f"/knowledges/marketplace/list/{str(page)}",
+        response = safe_requests.get(marketplace_url + f"/knowledges/marketplace/list/{str(page)}",
             headers=headers, timeout=10)
         if response.status_code == 200:
             return response.json()
@@ -79,8 +78,7 @@ class Knowledges(DBBaseModel):
     @classmethod
     def fetch_knowledge_details_marketplace(cls, knowledge_name):
         headers = {'Content-Type': 'application/json'}
-        response = requests.get(
-            marketplace_url + f"/knowledges/marketplace/details/{knowledge_name}",
+        response = safe_requests.get(marketplace_url + f"/knowledges/marketplace/details/{knowledge_name}",
             headers=headers, timeout=10)
         if response.status_code == 200:
             return response.json()

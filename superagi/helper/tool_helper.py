@@ -5,16 +5,13 @@ import os
 import sys
 import zipfile
 from urllib.parse import urlparse
-
-import requests
-
-from superagi.config.config import get_config
 from superagi.lib.logger import logger
 from superagi.models.tool import Tool
 from superagi.models.tool_config import ToolConfig
 from superagi.models.toolkit import Toolkit
 from superagi.tools.base_tool import BaseTool, ToolConfiguration
 from superagi.tools.base_tool import BaseToolkit
+from security import safe_requests
 
 
 def parse_github_url(github_url):
@@ -31,7 +28,7 @@ def download_tool(tool_url, target_folder):
     path = "/"
     owner, repo, branch = parts[0], parts[1], parts[2]
     archive_url = f"https://api.github.com/repos/{owner}/{repo}/zipball/{branch}"
-    response = requests.get(archive_url)
+    response = safe_requests.get(archive_url)
     tool_zip_file_path = os.path.join(target_folder, 'tool.zip')
 
     with open(tool_zip_file_path, 'wb') as f:
@@ -248,10 +245,10 @@ def get_readme_content_from_code_link(tool_code_link):
     branch = path_parts[4] if len(path_parts) > 4 else "main"
 
     readme_url = f"https://raw.githubusercontent.com/{username}/{repository}/{branch}/README.MD"
-    response = requests.get(readme_url)
+    response = safe_requests.get(readme_url)
     if response.status_code == 404:
         readme_url = f"https://raw.githubusercontent.com/{username}/{repository}/{branch}/README.md"
-        response = requests.get(readme_url)
+        response = safe_requests.get(readme_url)
     readme_content = response.text
     return readme_content
 

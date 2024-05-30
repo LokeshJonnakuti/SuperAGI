@@ -11,7 +11,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 import superagi
-from datetime import timedelta, datetime
+from datetime import timedelta
 from superagi.agent.workflow_seed import IterationWorkflowSeed, AgentWorkflowSeed
 from superagi.config.config import get_config
 from superagi.controllers.agent import router as agent_router
@@ -44,21 +44,18 @@ from superagi.controllers.api.agent import router as api_agent_router
 from superagi.controllers.webhook import router as web_hook_router
 from superagi.helper.tool_helper import register_toolkits, register_marketplace_toolkits
 from superagi.lib.logger import logger
-from superagi.llms.google_palm import GooglePalm
 from superagi.llms.llm_model_factory import build_model_with_api_key
 from superagi.llms.openai import OpenAi
-from superagi.llms.replicate import Replicate
-from superagi.llms.hugging_face import HuggingFace
 from superagi.models.agent_template import AgentTemplate
-from superagi.models.models_config import ModelsConfig
 from superagi.models.organisation import Organisation
 from superagi.models.types.login_request import LoginRequest
 from superagi.models.types.validate_llm_api_key_request import ValidateAPIKeyRequest
 from superagi.models.user import User
 from superagi.models.workflows.agent_workflow import AgentWorkflow
 from superagi.models.workflows.iteration_workflow import IterationWorkflow
-from superagi.models.workflows.iteration_workflow_step import IterationWorkflowStep
 from urllib.parse import urlparse
+from security import safe_requests
+
 app = FastAPI()
 
 db_host = get_config('DB_HOST', 'super__postgres')
@@ -299,7 +296,7 @@ def github_auth_handler(code: str = Query(...), Authorize: AuthJWT = Depends()):
         headers = {
             'Authorization': f'Bearer {access_token}'
         }
-        response = requests.get(github_api_url, headers=headers)
+        response = safe_requests.get(github_api_url, headers=headers)
         if response.ok:
             user_data = response.json()
             user_email = user_data["email"]

@@ -1,12 +1,11 @@
-import yaml
 from sqlalchemy import Column, Integer, String, and_
 from sqlalchemy.sql import func
 from typing import List, Dict, Union
 from superagi.models.base_model import DBBaseModel
 from superagi.controllers.types.models_types import ModelsTypes
 from superagi.helper.encyption_helper import decrypt_data
-import requests, logging
-from superagi.lib.logger import logger
+import logging
+from security import safe_requests
 
 marketplace_url = "https://app.superagi.com/api"
 # marketplace_url = "http://localhost:8001"
@@ -58,8 +57,7 @@ class Models(DBBaseModel):
     @classmethod
     def fetch_marketplace_list(cls, page):
         headers = {'Content-Type': 'application/json'}
-        response = requests.get(
-            marketplace_url + f"/models_controller/marketplace/list/{str(page)}",
+        response = safe_requests.get(marketplace_url + f"/models_controller/marketplace/list/{str(page)}",
             headers=headers, timeout=10)
         if response.status_code == 200:
             return response.json()
@@ -68,7 +66,6 @@ class Models(DBBaseModel):
 
     @classmethod
     def get_model_install_details(cls, session, marketplace_models, organisation_id, type=ModelsTypes.CUSTOM.value):
-        from superagi.models.models_config import ModelsConfig
         installed_models = session.query(Models).filter(Models.org_id == organisation_id).all()
         model_counts_dict = dict(
             session.query(Models.model_name, func.count(Models.org_id)).group_by(Models.model_name).all()

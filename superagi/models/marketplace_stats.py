@@ -1,9 +1,9 @@
 from __future__ import annotations
 
 from sqlalchemy import Column, Integer, String
-import requests
 # from superagi.models import AgentConfiguration
 from superagi.models.base_model import DBBaseModel
+from security import safe_requests
 
 marketplace_url = "https://app.superagi.com/api"
 # marketplace_url = "http://localhost:8001"
@@ -37,8 +37,7 @@ class MarketPlaceStats(DBBaseModel):
     @classmethod
     def get_knowledge_installation_number(cls, knowledge_id: int):
         headers = {'Content-Type': 'application/json'}
-        response = requests.get(
-            marketplace_url + f"/marketplace/knowledge/downloads/{str(knowledge_id)}",
+        response = safe_requests.get(marketplace_url + f"/marketplace/knowledge/downloads/{str(knowledge_id)}",
             headers=headers, timeout=10)
         if response.status_code == 200:
             return response.json()

@@ -1,10 +1,9 @@
 import json
-
-import requests
 from sqlalchemy import Column, Integer, String, Boolean
 
 from superagi.models.base_model import DBBaseModel
 from superagi.models.tool import Tool
+from security import safe_requests
 
 marketplace_url = "https://app.superagi.com/api"
 # marketplace_url = "http://localhost:8001"
@@ -90,8 +89,7 @@ class Toolkit(DBBaseModel):
     @classmethod
     def fetch_marketplace_list(cls, page):
         headers = {'Content-Type': 'application/json'}
-        response = requests.get(
-            marketplace_url + f"/toolkits/marketplace/list/{str(page)}",
+        response = safe_requests.get(marketplace_url + f"/toolkits/marketplace/list/{str(page)}",
             headers=headers, timeout=10)
         if response.status_code == 200:
             return response.json()
@@ -103,8 +101,7 @@ class Toolkit(DBBaseModel):
         headers = {'Content-Type': 'application/json'}
         search_str = search_str.replace(' ', '%20')
         toolkit_name = toolkit_name.replace(' ', '%20')
-        response = requests.get(
-            marketplace_url + f"/toolkits/marketplace/{search_str}/{toolkit_name}",
+        response = safe_requests.get(marketplace_url + f"/toolkits/marketplace/{search_str}/{toolkit_name}",
             headers=headers, timeout=10)
         if response.status_code == 200:
             return response.json()

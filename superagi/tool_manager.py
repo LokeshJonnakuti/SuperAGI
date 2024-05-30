@@ -1,9 +1,8 @@
 import os
 from pathlib import Path
-
-import requests
 import zipfile
 import json
+from security import safe_requests
 
 
 def parse_github_url(github_url):
@@ -20,7 +19,7 @@ def download_tool(tool_url, target_folder):
     owner, repo, branch, path = parts[0], parts[1], parts[2], "/".join(parts[3:])
     archive_url = f"https://api.github.com/repos/{owner}/{repo}/zipball/{branch}"
 
-    response = requests.get(archive_url)
+    response = safe_requests.get(archive_url)
 
     tool_zip_file_path = os.path.join(target_folder, 'tool.zip')
 
@@ -54,7 +53,7 @@ def download_marketplace_tool(tool_url, target_folder):
     parsed_url = tool_url.split("/")
     owner, repo = parsed_url[3], parsed_url[4]
     archive_url = f"https://api.github.com/repos/{owner}/{repo}/zipball/main"
-    response = requests.get(archive_url)
+    response = safe_requests.get(archive_url)
     tool_zip_file_path = os.path.join(target_folder, 'tool.zip')
 
     with open(tool_zip_file_path, 'wb') as f:
@@ -76,7 +75,7 @@ def download_marketplace_tool(tool_url, target_folder):
 def get_marketplace_tool_links(repo_url):
     folder_links = {}
     api_url = f"https://api.github.com/repos/{repo_url}/contents"
-    response = requests.get(api_url)
+    response = safe_requests.get(api_url)
     contents = response.json()
 
     for content in contents:
