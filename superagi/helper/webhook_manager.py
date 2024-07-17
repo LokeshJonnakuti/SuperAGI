@@ -25,7 +25,7 @@ class WebHookManager:
                 request=None
                 status='sent'
                 try:
-                    request = requests.post(webhook_obj.url.strip(), data=json.dumps(webhook_obj_body), headers=webhook_obj.headers)
+                    request = requests.post(webhook_obj.url.strip(), data=json.dumps(webhook_obj_body), headers=webhook_obj.headers, timeout=60)
                 except Exception as e:
                     logger.error(f"Exception occured in webhooks {e}")
                     error=str(e)

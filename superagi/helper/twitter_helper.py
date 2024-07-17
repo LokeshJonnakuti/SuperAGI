@@ -28,7 +28,7 @@ class TwitterHelper:
             headers = {'Authorization': 'application/octet-stream'}
             response = requests.post(upload_endpoint, headers=headers,
                                      data={'media_data': b64_image},
-                                     auth=oauth)
+                                     auth=oauth, timeout=60)
             ids = json.loads(response.text)['media_id']
             media_ids.append(str(ids))
         return media_ids
