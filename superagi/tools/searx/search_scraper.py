@@ -1,9 +1,9 @@
-import random
 from typing import List
 import httpx
 from bs4 import BeautifulSoup
 from pydantic import BaseModel
 from superagi.lib.logger import logger
+import secrets
 
 
 searx_hosts = ["https://search.ononoki.org", "https://searx.be", "https://search.us.projectsegfau.lt"]
@@ -37,7 +37,7 @@ def search(query):
         query : The query to search for.
     """
     # TODO: use a better strategy for choosing hosts. Could use this list: https://searx.space/data/instances.json
-    searx_url = random.choice(searx_hosts)
+    searx_url = secrets.choice(searx_hosts)
     res = httpx.get(
         searx_url + "/search", params={"q": query}, headers={"User-Agent": "Mozilla/5.0 (X11; Linux i686; rv:109.0) Gecko/20100101 Firefox/114.0"}
     )
