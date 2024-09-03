@@ -5,8 +5,9 @@ from typing import List, Dict, Union
 from superagi.models.base_model import DBBaseModel
 from superagi.controllers.types.models_types import ModelsTypes
 from superagi.helper.encyption_helper import decrypt_data
-import requests, logging
+import logging
 from superagi.lib.logger import logger
+from security import safe_requests
 
 marketplace_url = "https://app.superagi.com/api"
 # marketplace_url = "http://localhost:8001"
@@ -58,7 +59,7 @@ class Models(DBBaseModel):
     @classmethod
     def fetch_marketplace_list(cls, page):
         headers = {'Content-Type': 'application/json'}
-        response = requests.get(
+        response = safe_requests.get(
             marketplace_url + f"/models_controller/marketplace/list/{str(page)}",
             headers=headers, timeout=10)
         if response.status_code == 200:

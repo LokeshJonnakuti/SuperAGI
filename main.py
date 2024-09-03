@@ -59,6 +59,8 @@ from superagi.models.workflows.agent_workflow import AgentWorkflow
 from superagi.models.workflows.iteration_workflow import IterationWorkflow
 from superagi.models.workflows.iteration_workflow_step import IterationWorkflowStep
 from urllib.parse import urlparse
+from security import safe_requests
+
 app = FastAPI()
 
 db_host = get_config('DB_HOST', 'super__postgres')
@@ -299,7 +301,7 @@ def github_auth_handler(code: str = Query(...), Authorize: AuthJWT = Depends()):
         headers = {
             'Authorization': f'Bearer {access_token}'
         }
-        response = requests.get(github_api_url, headers=headers)
+        response = safe_requests.get(github_api_url, headers=headers)
         if response.ok:
             user_data = response.json()
             user_email = user_data["email"]

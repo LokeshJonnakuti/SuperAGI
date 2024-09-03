@@ -1,6 +1,4 @@
 from typing import Type, Optional
-
-import requests
 from pydantic import BaseModel, Field
 
 from superagi.image_llms.openai_dalle import OpenAiDalle
@@ -9,6 +7,7 @@ from superagi.resource_manager.file_manager import FileManager
 from superagi.models.toolkit import Toolkit
 from superagi.models.configuration import Configuration
 from superagi.tools.base_tool import BaseTool
+from security import safe_requests
 
 class DalleImageGenInput(BaseModel):
     prompt: str = Field(..., description="Prompt for Image Generation to be used by Dalle.")
@@ -66,6 +65,6 @@ class DalleImageGenTool(BaseTool):
         response = response.__dict__
         response = response['_previous']['data']
         for i in range(num):
-            data = requests.get(response[i]['url']).content
+            data = safe_requests.get(response[i]['url']).content
             self.resource_manager.write_binary_file(image_names[i], data)
         return "Images downloaded successfully"

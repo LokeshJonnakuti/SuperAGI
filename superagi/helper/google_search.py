@@ -1,9 +1,9 @@
-import requests
 import time
 from pydantic import BaseModel
 from superagi.lib.logger import logger
 
 from superagi.helper.webpage_extractor import WebpageExtractor
+from security import safe_requests
 
 
 class GoogleSearchWrap:
@@ -48,7 +48,7 @@ class GoogleSearchWrap:
                 "num": self.num_results,
                 "start": page
             }
-            response = requests.get(url, params=params, timeout=100)
+            response = safe_requests.get(url, params=params, timeout=100)
 
             if response.status_code == 200:
                 try:

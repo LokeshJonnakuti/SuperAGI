@@ -19,6 +19,7 @@ from superagi.models.agent import Agent
 from superagi.models.agent_execution import AgentExecution
 from superagi.helper.s3_helper import S3Helper
 from superagi.types.storage_types import StorageType
+from security import safe_requests
 
 class InstagramSchema(BaseModel):
     photo_description: str = Field(
@@ -174,7 +175,7 @@ class InstagramTool(BaseTool):
 
     def get_req_insta_id(self,root_api_url,facebook_page_id,meta_user_access_token):
         url_to_get_acc_id=f"{root_api_url}{facebook_page_id}?fields=instagram_business_account&access_token={meta_user_access_token}"
-        response=requests.get(
+        response=safe_requests.get(
             url_to_get_acc_id
         )
 

@@ -1,8 +1,8 @@
 import os
-import requests
 from superagi.config.config import get_config
 from superagi.lib.logger import logger
 from superagi.llms.base_llm import BaseLlm
+from security import safe_requests
 
 
 class Replicate(BaseLlm):
@@ -103,7 +103,7 @@ class Replicate(BaseLlm):
             bool: True if the access key is valid, False otherwise.
         """
         headers = {"Authorization": "Token " + self.api_key}
-        response = requests.get("https://api.replicate.com/v1/collections", headers=headers)
+        response = safe_requests.get("https://api.replicate.com/v1/collections", headers=headers)
 
         # If the request is successful, status code will be 200
         if response.status_code == 200:

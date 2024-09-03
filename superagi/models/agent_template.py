@@ -1,6 +1,4 @@
 import json
-
-import requests
 from sqlalchemy import Column, Integer, String, Text
 
 from superagi.lib.logger import logger
@@ -8,6 +6,7 @@ from superagi.models.agent_template_config import AgentTemplateConfig
 from superagi.models.workflows.agent_workflow import AgentWorkflow
 from superagi.models.base_model import DBBaseModel
 from superagi.models.workflows.iteration_workflow import IterationWorkflow
+from security import safe_requests
 
 marketplace_url = "https://app.superagi.com/api/"
 # marketplace_url = "http://localhost:8001/"
@@ -116,7 +115,7 @@ class AgentTemplate(DBBaseModel):
         """
 
         headers = {'Content-Type': 'application/json'}
-        response = requests.get(
+        response = safe_requests.get(
             marketplace_url + "agent_templates/marketplace/list?search=" + search_str + "&page=" + str(page),
             headers=headers, timeout=10)
         if response.status_code == 200:
@@ -137,7 +136,7 @@ class AgentTemplate(DBBaseModel):
         """
 
         headers = {'Content-Type': 'application/json'}
-        response = requests.get(
+        response = safe_requests.get(
             marketplace_url + "agent_templates/marketplace/template_details/" + str(agent_template_id),
             headers=headers, timeout=10)
         if response.status_code == 200:
