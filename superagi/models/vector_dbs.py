@@ -1,10 +1,10 @@
 from __future__ import annotations
-import requests
 
 from sqlalchemy import Column, Integer, String
 
 # from superagi.models import AgentConfiguration
 from superagi.models.base_model import DBBaseModel
+from security import safe_requests
 
 marketplace_url = "https://app.superagi.com/api"
 # marketplace_url = "http://localhost:8001"
@@ -42,7 +42,7 @@ class Vectordbs(DBBaseModel):
     @classmethod
     def fetch_marketplace_list(cls):
         headers = {'Content-Type': 'application/json'}
-        response = requests.get(
+        response = safe_requests.get(
             marketplace_url + f"/vector_dbs/marketplace/list",
             headers=headers, timeout=10)
         if response.status_code == 200:

@@ -6,6 +6,7 @@ from superagi.lib.logger import logger
 from superagi.llms.base_llm import BaseLlm
 from superagi.llms.utils.huggingface_utils.tasks import Tasks, TaskParameters
 from superagi.llms.utils.huggingface_utils.public_endpoints import ACCOUNT_VERIFICATION_URL
+from security import safe_requests
 
 class HuggingFace(BaseLlm):
     def __init__(
@@ -60,7 +61,7 @@ class HuggingFace(BaseLlm):
         Returns:
             bool: True if the access key is valid, False otherwise.
         """
-        response = requests.get(ACCOUNT_VERIFICATION_URL, headers=self.headers)
+        response = safe_requests.get(ACCOUNT_VERIFICATION_URL, headers=self.headers)
 
         # A more sophisticated check could be done here.
         # Ideally we should be checking the response from the endpoint along with the status code.

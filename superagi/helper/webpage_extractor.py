@@ -1,7 +1,6 @@
 from io import BytesIO
 from PyPDF2 import PdfFileReader
 from PyPDF2 import PdfReader
-import requests
 import re
 from requests.exceptions import RequestException
 from bs4 import BeautifulSoup
@@ -11,6 +10,7 @@ import time
 import random
 from lxml import html
 from superagi.lib.logger import logger
+from security import safe_requests
 
 USER_AGENTS = [
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3",
@@ -47,7 +47,7 @@ class WebpageExtractor:
         """
         try:
             if url.lower().endswith(".pdf"):
-                response = requests.get(url)
+                response = safe_requests.get(url)
                 response.raise_for_status()
 
                 with BytesIO(response.content) as pdf_data:
@@ -98,7 +98,7 @@ class WebpageExtractor:
         }
 
         try:
-            response = requests.get(url, headers=headers, timeout=10)
+            response = safe_requests.get(url, headers=headers, timeout=10)
             if response.status_code == 200:
                 soup = BeautifulSoup(response.text, 'html.parser')
                 for tag in soup(['script', 'style', 'nav', 'footer', 'head', 'link', 'meta', 'noscript']):
